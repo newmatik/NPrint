@@ -1,0 +1,4 @@
+Flask == 2.3.2
+pycups == 2.0.1
+ruff == 0.0.285
+python-dotenv == 1.0.0
