@@ -6,7 +6,6 @@ import cups
 import uuid
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
-from model.labelzpl import batchlabel, boxlabel
 from model.security import api_key_required
 
 app = Flask(__name__)
@@ -64,8 +63,11 @@ class PrintBatchLabel(Resource):
         label_id = str(uuid.uuid4())
         label_file = 'labelfiles/'+label_id+'.zpl'
 
+        with open('templates/batchlabel.zpl', 'r') as f:
+            template = f.read()
+
         with open(label_file, 'w') as f:
-            f.write(batchlabel.format(batch=args['batch'], 
+            f.write(template.format(batch=args['batch'], 
                                     item_code=args['item_code'], 
                                     description_line1=args['description_line1'], 
                                     description_line2=args['description_line2'],
@@ -105,8 +107,11 @@ class PrintBoxLabel(Resource):
         label_id = str(uuid.uuid4())
         label_file = 'labels/'+label_id+'.zpl'
 
+        with open('templates/boxlabel.zpl', 'r') as f:
+            template = f.read()
+
         with open(label_file, 'w') as f:
-            f.write(boxlabel.format(kitting_box=args['kitting_box'],
+            f.write(template.format(kitting_box=args['kitting_box'],
                                     work_order=args['work_order'], 
                                     item_code=args['item_code'],
                                     priority=args['priority'],
