@@ -1,7 +1,7 @@
 # NPrint
 
 Raspberry Pi (single board computer) based Hardware Print Server with 
-REST API to print on ZPL enabled label printers
+REST API to print on ZPL enabled label printers.
 
 ## Hardware Requirements
 
@@ -11,7 +11,7 @@ REST API to print on ZPL enabled label printers
  - Raspberry Pi 15W Power Supply (EU)
  - 16 GB MicroSD-Card (Class10)
 
-### Label Pritner with ZPL Protocol
+### Label Printer with ZPL Protocol
  - ZD411d for 5cm labels (batch label)
  - Zebra GK420d or Labelident BP41 for 10cm labels (shipping labels)
 

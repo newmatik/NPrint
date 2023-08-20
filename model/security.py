@@ -1,11 +1,11 @@
 from flask import request
+from config import API_KEY
 import functools
 
 def is_valid(api_key):
-    if api_key == "1234567890":
-        return True
+    return True if api_key == API_KEY else False
 
-def apikey_required(func):
+def api_key_required(func):
     @functools.wraps(func)
     def decorator(*args, **kwargs):
         if request.json:

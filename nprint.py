@@ -7,7 +7,7 @@ import uuid
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from model.labelzpl import batchlabel, boxlabel
-from model.security import apikey_required
+from model.security import api_key_required
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -27,16 +27,16 @@ class Ping(Resource):
         return {'message': 'pong'}
     
 class Printers(Resource):
-    @apikey_required
+    @api_key_required
     def get(self):
         conn = cups.Connection ()
         printers = conn.getPrinters ()
         return {'printers': printers}
 
 class DeleteLabelFiles(Resource):
-    @apikey_required
+    @api_key_required
     def post(self):
-        files = glob.glob('labels/*')
+        files = glob.glob('labelfiles/*')
         if len(files) == 0:
             return {'message': 'No label files to delete'}
         for f in files:
@@ -62,7 +62,7 @@ class PrintBatchLabel(Resource):
         args = parser.parse_args()
 
         label_id = str(uuid.uuid4())
-        label_file = 'labels/'+label_id+'.zpl'
+        label_file = 'labelfiles/'+label_id+'.zpl'
 
         with open(label_file, 'w') as f:
             f.write(batchlabel.format(batch=args['batch'], 
@@ -121,10 +121,9 @@ class PrintBoxLabel(Resource):
 
         os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
 
-        return {'message': 'Batch label printed',
-                'batch': args['batch'],
-                'printer': args['printer'],
-                'label_id': label_id}, 200  
+        return {'message': 'Box label printed',
+                'kitting_box': args['kitting_box'],
+                'printer': args['printer']}, 200  
 
 api = Api(app, prefix='/api')
 api.add_resource(IndexPage, '/')

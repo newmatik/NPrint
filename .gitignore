@@ -1,6 +1,6 @@
 # Projct specific files
-labels/*
-!labels/.gitkeep 
+labelfiles/*
+!labelfiles/.gitkeep 
 
 Pipfile.lock
 .DS_Store
