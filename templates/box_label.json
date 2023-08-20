@@ -1,50 +1,54 @@
 {
 	"name": "Box Label",
-	"template": "box_label.zpl",
     "parser_args": [
         {
+			"arg": "api_key",
+            "required": true,
+			"help": "api_key"
+		},
+        {
             "arg": "printer",
-            "type": "str",
+            "required": true,
             "help": "Printer to print to"
         },
         {
             "arg": "kitting_box",
-            "type": "str",
+            "required": true,
             "help": "Kitting box number"
         },
         {
             "arg": "work_order",
-            "type": "str",
+            "required": true,
             "help": "Work order"
         },
         {
             "arg": "item_code",
-            "type": "str",
+            "required": true,
             "help": "Item code"
         },
         {
             "arg": "priority",
-            "type": "str",
+            "required": true,
             "help": "Priority"
         },
         {
             "arg": "sales_order",
-            "type": "str",
+            "required": true,
             "help": "Sales order"
         },
         {
             "arg": "qty",
-            "type": "str",
+            "required": true,
             "help": "Quantity"
         },
         {
             "arg": "description",
-            "type": "str",
+            "required": true,
             "help": "Description"
         },
         {
             "arg": "type",
-            "type": "str",
+            "required": true,
             "help": "Type"
         }
     ]

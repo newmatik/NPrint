@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c4ff95ddb66f89a753eb85c55978adbd627376a3635c87676740a0701d308a50"
+            "sha256": "ca1507f736e342bad3ed6ae607aa07df49e13a2acf615544c0c9d4457c298e19"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -49,13 +49,13 @@
             "markers": "python_version >= '3.8'",
             "version": "==2.3.2"
         },
-        "flask-api-key": {
+        "flask-cors": {
             "hashes": [
-                "sha256:0441714674535dfd36708ea19149ce6764a21f23178d6f09fde28bddaeeaa176",
-                "sha256:511e9f91ee7811c43e27a98f13e27033ff4ccd2724a7e37f879f347e8a53a9e0"
+                "sha256:bc3492bfd6368d27cfe79c7821df5a8a319e1a6d5eab277a3794be19bdc51783",
+                "sha256:f268522fcb2f73e2ecdde1ef45e2fd5c71cc48fe03cffb4b441c6d1b40684eb0"
             ],
             "index": "pypi",
-            "version": "==0.2.12"
+            "version": "==4.0.0"
         },
         "flask-restful": {
             "hashes": [
@@ -161,13 +161,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==23.1"
-        },
-        "passlib": {
-            "hashes": [
-                "sha256:aa6bca462b8d8bda89c70b382f0c298a20b5560af6cbfa2dce410c0a2fb669f1",
-                "sha256:defd50f72b65c5402ab2c573830a6978e5f202ad0d984793c8dde2c4152ebe04"
-            ],
-            "version": "==1.7.4"
         },
         "pycups": {
             "hashes": [

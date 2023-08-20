@@ -1,65 +1,69 @@
 {
 	"name": "Batch Label",
-	"template": "batch_label.zpl",
 	"parser_args":[
         {
+			"arg": "api_key",
+            "required": true,
+			"help": "api_key"
+		},
+        {
 			"arg": "printer",
-			"type": "str",
+            "required": true,
 			"help": "Printer name not defined or not a string"
 		},
 		{
 			"arg": "batch",
-			"type": "str",
+            "required": true,
 			"help": "Batch number"
 		},
 		{
 			"arg": "item_code",
-			"type": "str",
+            "required": true,
 			"help": "Item code"
 		},
         {
             "arg": "description_line1",
-            "type": "str",
+            "required": true,
             "help": "description_line1"
         },
         {
             "arg": "description_line2",
-            "type": "str",
+            "required": true,
             "help": "description_line2"
         },
         {
             "arg": "warehouse",
-            "type": "str",
+            "required": true,
             "help": "warehouse"
         },
         {
             "arg": "warehouse_parent",
-            "type": "str",
+            "required": true,
             "help": "warehouse_parent"
         },
         {
             "arg": "tower",
-            "type": "str",
+            "required": true,
             "help": "tower"
         },
         {
             "arg": "msl",
-            "type": "str",
+            "required": true,
             "help": "msl"
         },
         {
             "arg": "qty",
-            "type": "str",
+            "required": true,
             "help": "qty"
         },
         {
             "arg": "date",
-            "type": "str",
+            "required": true,
             "help": "date"
         },
         {
             "arg": "user",
-            "type": "str",
+            "required": true,
             "help": "user"
         }
 	]
