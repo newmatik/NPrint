@@ -108,7 +108,7 @@ class PrintBoxLabel(Resource):
         args = parser.parse_args()
 
         label_id = str(uuid.uuid4())
-        label_file = 'labels/'+label_id+'.zpl'
+        label_file = 'labelfiles/'+label_id+'.zpl'
 
         with open('templates/box_label.zpl', 'r') as f:
             template = f.read()
