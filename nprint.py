@@ -4,194 +4,135 @@ import os
 import glob
 import cups
 import uuid
-import json
-from flask import Flask, request, Response, jsonify
-from labels import batchlabel, boxlabel
+from flask import Flask
+from flask_restful import Resource, Api, reqparse
+from model.labelzpl import batchlabel, boxlabel
+from model.security import apikey_required
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 
-conn = cups.Connection ()
-printers = conn.getPrinters ()
-errorlist = []
-errorlist.clear()
+def check_printer(printer_name):
+    if printer_name not in cups.Connection().getPrinters():
+        return {'message': f'Printer \'{printer_name}\' not found', 
+                'tip': 'Call api endpoint \'printers\' for all available printers'}, 404
+    return None
 
+class IndexPage(Resource):
+    def get(self):
+        return {'message': 'NPrint API'}
 
-def check_api_key(args):
-    if not args.get('api_key'):
-        errorlist.append("'api_key' missing qurey parameter")
-    if args.get('api_key') != app.config.get("API_KEY"):
-        errorlist.append("'api_key' is invalid")
-
-
-def check_batch_args(args):
-    if not args.get('printer'):
-        errorlist.append("'printer' missing qurey parameter")
-    if not args.get('kitting_box'):
-        errorlist.append("'kitting_box' missing qurey parameter")
-    if not args.get('work_order'):
-        errorlist.append("'work_order' missing qurey parameter")
-    if not args.get('item_code'):
-        errorlist.append("'item_code' missing qurey parameter")
-    if not args.get('priority'):
-        errorlist.append("'priority' missing qurey parameter")
-    if not args.get('sales_order'):
-        errorlist.append("'sales_order' missing qurey parameter")
-    if not args.get('qty'):
-        errorlist.append("'qty' missing qurey parameter")
-    if not args.get('description'):
-        errorlist.append("'description' missing qurey parameter")
-    if not args.get('type'):
-        errorlist.append("'type' missing qurey parameter")
-
-
-def check_box_args(args):
-    if not args.get('printer'):
-        errorlist.append("'printer' missing qurey parameter")
-    if not args.get('kitting_box'):
-        errorlist.append("'kitting_box' missing qurey parameter")
-    if not args.get('work_order'):
-        errorlist.append("'work_order' missing qurey parameter")
-    if not args.get('item_code'):
-        errorlist.append("'item_code' missing qurey parameter")
-    if not args.get('priority'):
-        errorlist.append("'priority' missing qurey parameter")
-    if not args.get('sales_order'):
-        errorlist.append("'sales_order' missing qurey parameter")
-    if not args.get('qty'):
-        errorlist.append("'qty' missing qurey parameter")
-    if not args.get('description'):
-        errorlist.append("'description' missing qurey parameter")
-    if not args.get('type'):
-        errorlist.append("'type' missing qurey parameter")
-
-
-@app.route("/api/print_batchlabel", methods = ['POST'])
-def print_batchlabel():
-    args = request.args
-    check_api_key(args)
-    check_batch_args(args)
-
-    """if len(errorlist) > 0:
-        resp = Response(
-            response=jsonify(errorlist), status=400, mimetype="application/json")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        errorlist.clear()
-        return resp"""
+class Ping(Resource):
+    def get(self):
+        return {'message': 'pong'}
     
-    label_id = str(uuid.uuid4())
-    label_file = 'labels/'+label_id+'.zpl'
+class Printers(Resource):
+    @apikey_required
+    def get(self):
+        conn = cups.Connection ()
+        printers = conn.getPrinters ()
+        return {'printers': printers}
 
-    with open(label_file, 'w') as f:
-        f.write(batchlabel.format(batch=args['batch'], 
-                                  item_code=args['item_code'], 
-                                  description_line1=args['description_line1'], 
-                                  description_line2=args['description_line2'],
-                                  warehouse=args['warehouse'],
-                                  warehouse_parent=args['warehouse_parent'],
-                                  tower=args['tower'],
-                                  msl=args['msl'],
-                                  qty=args['qty'],
-                                  date=args['date'],
-                                  user=args['user']))
+class DeleteLabelFiles(Resource):
+    @apikey_required
+    def post(self):
+        files = glob.glob('labels/*')
+        if len(files) == 0:
+            return {'message': 'No label files to delete'}
+        for f in files:
+            os.remove(f)
+        return {'message': 'Label files deleted',
+                'files': files}
 
-    os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
+class PrintBatchLabel(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('printer', type=str, help='Printer to print to') \
+            .add_argument('batch', type=str, help='Batch number') \
+            .add_argument('item_code', type=str, help='Item code') \
+            .add_argument('description_line1', type=str, help='Description line 1') \
+            .add_argument('description_line2', type=str, help='Description line 2') \
+            .add_argument('warehouse', type=str, help='Warehouse') \
+            .add_argument('warehouse_parent', type=str, help='Warehouse parent') \
+            .add_argument('tower', type=str, help='Tower') \
+            .add_argument('msl', type=str, help='MSL') \
+            .add_argument('qty', type=str, help='Quantity') \
+            .add_argument('date', type=str, help='Date') \
+            .add_argument('user', type=str, help='User')
+        args = parser.parse_args()
 
-    resp = Response(
-        response=json.dumps(args), status=200, mimetype="application/json")
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    errorlist.clear()
-    return resp
+        label_id = str(uuid.uuid4())
+        label_file = 'labels/'+label_id+'.zpl'
 
+        with open(label_file, 'w') as f:
+            f.write(batchlabel.format(batch=args['batch'], 
+                                    item_code=args['item_code'], 
+                                    description_line1=args['description_line1'], 
+                                    description_line2=args['description_line2'],
+                                    warehouse=args['warehouse'],
+                                    warehouse_parent=args['warehouse_parent'],
+                                    tower=args['tower'],
+                                    msl=args['msl'],
+                                    qty=args['qty'],
+                                    date=args['date'],
+                                    user=args['user']))
 
-@app.route("/api/print_boxlabel", methods = ['POST'])
-def print_boxlabel():
-    args = request.args
-    check_api_key(args)
-    check_box_args(args)
+        result = check_printer(args['printer'])
+        if result is not None:
+            return result
 
-    if len(errorlist) > 0:
-        resp = Response(
-            response=jsonify(errorlist), status=400, mimetype="application/json")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        errorlist.clear()
-        return resp
+        os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
 
-    label_id = str(uuid.uuid4())
-    label_file = 'labels/'+label_id+'.zpl'
+        return {'message': 'Batch label printed',
+                'batch': args['batch'],
+                'printer': args['printer'],
+                'label_id': label_id}, 200
 
-    with open(label_file, 'w') as f:
-        f.write(boxlabel.format(kitting_box=args['kitting_box'], 
-                                  work_order=args['work_order'], 
-                                  item_code=args['item_code'], 
-                                  priority=args['priority'],
-                                  sales_order=args['sales_order'],
-                                  qty=args['qty'],
-                                  description=args['description'],
-                                  type=args['type']))
+class PrintBoxLabel(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('printer', type=str, help='Printer to print to') \
+            .add_argument('kitting_box', type=str, help='Kitting box number') \
+            .add_argument('work_order', type=str, help='Work order') \
+            .add_argument('item_code', type=str, help='Item code') \
+            .add_argument('priority', type=str, help='Priority') \
+            .add_argument('sales_order', type=str, help='Sales order') \
+            .add_argument('qty', type=str, help='Quantity') \
+            .add_argument('description', type=str, help='Description') \
+            .add_argument('type', type=str, help='Type')
+        args = parser.parse_args()
 
-    os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
+        label_id = str(uuid.uuid4())
+        label_file = 'labels/'+label_id+'.zpl'
 
-    resp = Response(
-        response=json.dumps(args), status=200, mimetype="application/json")
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    errorlist.clear()
-    return resp
+        with open(label_file, 'w') as f:
+            f.write(boxlabel.format(kitting_box=args['kitting_box'],
+                                    work_order=args['work_order'], 
+                                    item_code=args['item_code'],
+                                    priority=args['priority'],
+                                    sales_order=args['sales_order'],
+                                    qty=args['qty'],
+                                    description=args['description'],
+                                    type=args['type']))
 
+        result = check_printer(args['printer'])
+        if result is not None:
+            return result
 
-@app.route("/api/get_printers", methods = ['GET'])
-def get_printers():
-    args = request.args
-    check_api_key(args)
+        os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
 
-    if len(errorlist) > 0:
-        resp = Response(
-            response=jsonify(errorlist), status=400, mimetype="application/json")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        errorlist.clear()
-        return resp
+        return {'message': 'Batch label printed',
+                'batch': args['batch'],
+                'printer': args['printer'],
+                'label_id': label_id}, 200  
 
-    return printers
+api = Api(app, prefix='/api')
+api.add_resource(IndexPage, '/')
+api.add_resource(Ping, '/ping')
+api.add_resource(DeleteLabelFiles, '/delete/labelfiles')
+api.add_resource(Printers, '/printers')
+api.add_resource(PrintBatchLabel, '/print/batchlabel')
+api.add_resource(PrintBoxLabel, '/print/boxlabel')
 
-
-@app.route("/api/clean_labels", methods = ['POST'])
-def clean_labels():
-    args = request.args
-    check_api_key(args)
-
-    if len(errorlist) > 0:
-        resp = Response(
-            response=jsonify(errorlist), status=400, mimetype="application/json")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        errorlist.clear()
-        return resp
-
-    files = glob.glob('labels/*')
-    for f in files:
-        os.remove(f)
-    return files
-
-
-# This doesn't need authentication
-@app.route("/api/ping", methods = ['GET'])
-#@cross_origin(headers=['Content-Type', 'Authorization'])
-def ping():
-    return "pong"
-
-
-# This does need authentication
-@app.route("/api/auth_ping", methods = ['GET'])
-#@cross_origin(headers=['Content-Type', 'Authorization'])
-#@requires_auth
-def auth_ping():
-    args = request.args
-    check_api_key(args)
-
-    if len(errorlist) > 0:
-        resp = Response(
-            response=jsonify(errorlist), status=400, mimetype="application/json")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        errorlist.clear()
-        return resp
-
-    return "pong"
+if __name__ == '__main__':
+    app.run(debug=True)
