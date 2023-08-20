@@ -4,6 +4,7 @@ import os
 import glob
 import cups
 import uuid
+import json
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from model.security import api_key_required
@@ -45,26 +46,28 @@ class DeleteLabelFiles(Resource):
 
 class PrintBatchLabel(Resource):
     def post(self):
+        # Create the parser
         parser = reqparse.RequestParser()
-        parser.add_argument('printer', type=str, help='Printer to print to') \
-            .add_argument('batch', type=str, help='Batch number') \
-            .add_argument('item_code', type=str, help='Item code') \
-            .add_argument('description_line1', type=str, help='Description line 1') \
-            .add_argument('description_line2', type=str, help='Description line 2') \
-            .add_argument('warehouse', type=str, help='Warehouse') \
-            .add_argument('warehouse_parent', type=str, help='Warehouse parent') \
-            .add_argument('tower', type=str, help='Tower') \
-            .add_argument('msl', type=str, help='MSL') \
-            .add_argument('qty', type=str, help='Quantity') \
-            .add_argument('date', type=str, help='Date') \
-            .add_argument('user', type=str, help='User')
+
+        # Read the JSON file
+        with open('templates/batch_label.json') as f:
+            parser_args = json.load(f)['parser_args']
+
+        # Add the arguments to the parser
+        for arg in parser_args:
+            parser.add_argument(arg['arg'], type=arg['type'], help=arg['help'])
+            
+        # Parse the arguments
         args = parser.parse_args()
 
         label_id = str(uuid.uuid4())
         label_file = 'labelfiles/'+label_id+'.zpl'
 
-        with open('templates/batchlabel.zpl', 'r') as f:
-            template = f.read()
+        try:
+            with open('templates/batch_label.zpl', 'r') as f:
+                template = f.read()
+        except FileNotFoundError:
+            return {'message': 'Template file not found'}, 404
 
         with open(label_file, 'w') as f:
             f.write(template.format(batch=args['batch'], 
@@ -107,7 +110,7 @@ class PrintBoxLabel(Resource):
         label_id = str(uuid.uuid4())
         label_file = 'labels/'+label_id+'.zpl'
 
-        with open('templates/boxlabel.zpl', 'r') as f:
+        with open('templates/box_label.zpl', 'r') as f:
             template = f.read()
 
         with open(label_file, 'w') as f:
