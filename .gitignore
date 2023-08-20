@@ -1,5 +1,6 @@
 # Projct specific files
-labels/
+labels/*
+!labels/.gitkeep 
 
 .DS_Store
 .env

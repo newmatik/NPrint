@@ -208,5 +208,9 @@ pipenv shell
 To start NPrint in developer mode simply run the following in your NPrint folder:
 
 ```
-flask run --debug --host=0.0.0.0
+flask run
 ```
+
+Check if the flask app is runnign by opening the URL in your browser:
+
+http://10.1.0.68:3000/api/ping (replace with actual IP)
