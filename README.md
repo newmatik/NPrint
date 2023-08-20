@@ -15,20 +15,18 @@ REST API to print on ZPL enabled label printers
  - ZD411d for 5cm labels (batch label)
  - Zebra GK420d or Labelident BP41 for 10cm labels (shipping labels)
 
-# BASIC SETUP OF RASPBERRY PI
+## OS SETUP OF RASPBERRY PI
 
 Download Raspberry Pi Imager and download a fresh image of Raspberry Pi OS onto the SD Card.
 We recommend using Raspberry Pi OS Lite (32-bit). Set the advanced settings like hostname
 and passwords before flashing the image so you can reduce configuration efforts. This can be
 done in Raspberry Pi Imager with the gear symbol, before flashing.
 
-## Default User 
+### Default User 
 Username: nprint
 Password: smart4pi
 
 ## Basic System Configuration
-
-### CONNECT THROUGH SSH
 
 Connect to the device through SSH (replace with actual IP address).
 Log in with user "nprint" and password "smart4pi".
@@ -37,13 +35,15 @@ Log in with user "nprint" and password "smart4pi".
 ssh nprint@10.1.0.68 $
 ```
 
-### SYSTEM UPDATE
+### System Update
+
+Update Raspberry Pi OS and all packages with apt-get package manager by running this command:
 
 ```
 sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoclean -y && sudo apt-get clean -y && sudo apt autoremove -y && sudo apt autoremove -y
 ```
 
-### SETTING HOSTNAME
+### Setting Hostname
 
 ```
 sudo raspi-config
@@ -54,16 +54,18 @@ example: nprint-we1.de.newmatik.com
 
 After setting the hostname, reboot once.
 
-### INSTALLING THE BASICS
+### Installing the basics
 
 ```
-sudo apt-get install vim git -y
+sudo apt-get install -y vim git python3-pip 
 ```
 
-### INSTALLING CUPS
+### Installing CUPS
+
+The system uses CUPS as the print server. Install:
 
 ```
-sudo apt-get install cups cups-client lpr -y
+sudo apt-get install -y cups cups-client lpr libcups2-dev
 ```
 
 CUPS uses the user group “lpadmin” to know who is authorized to administer the printers.
@@ -120,129 +122,75 @@ Open the CUPS admin page http://10.1.0.68:631/ (replace with actual IP address) 
 Select the local barcode printer e.g. "Zebra Technologies ZTC TLP 2824 Plus (Zebra Technologies ZTC 
 TLP 2824 Plus)". Set a logical name, description and location.
 
-
-
-
-Example:
-
-
-
+### Example for Batch Label Printer:
 
 Name: WE1-Batchlabel
-Description: WE1 Batchlabel Printer (ZLP2824 Plus)
+Description: WE1 Batch Label Printer (ZLP2824 Plus)
 Location: WE1
 Select Netrowk Print share
 
+In step 5 select the Model (e.g. "Zebra ZPL Label Printer (en)") and press Add Printer.
 
+Under "General" configure the label size. In our case we select "custom" label size with
+53x55 mm size with 203 dpi. Web Sensing and Direct Thermotransfermedia as standard settings.
+Go to "Printer Settings" before saving and adjust darkness to 30 and print mode to "tear off".
+Set the print rate to the highest print speed.
 
+Now save these defaults and go to the printer page to print a test page.
+
+### Example for Box Label Printer:
+
+Name: WE1-Boxlabel
+Description: WE1 Box Label Printer (GK420d)
+Location: WE1
+Select Netrowk Print share
 
 In step 5 select the Model (e.g. "Zebra ZPL Label Printer (en)") and press Add Printer.
 
+Under "General" configure the label size. In our case we select "custom" label size with
+101x152 mm size with 203 dpi. Web Sensing and Direct Thermotransfermedia as standard settings.
+Go to "Printer Settings" before saving and adjust darkness to 30 and print mode to "tear off".
+Set the print rate to the highest print speed.
 
+Now save these defaults and go to the printer page to print a test page.
 
-
-Now configure the label size under general. In our case we select custom label size with
-53x55mm size with 203 dpi. Web Sensing and Direct Thermotransfermedia as standard settings.
-
-
-
-
-After the printer is saved, go and make more detailed printersettings.
-Contrast: 30 and print mode "tear off".
-
-
-
-
-Confirm the print by doing a test print.
-
-
-
+### Are the labels printed inverted?
 
 To change the orientation by 180 degrees run the following in the terminal with the correct printer name
 
-
-
-
 lpadmin -p WE1-Batchlabel -o orientation-requested-default=6
 
+## SETTING UP NPRINT
 
+### About Flask REST API Development
 
+For basic concepts of how this REST API is built, check out the following resources:
+- https://auth0.com/blog/developing-restful-apis-with-python-and-flask/
+- https://flask-restful.readthedocs.io/en/latest/
 
+Clone the project into your home folder. This will create the project folder at "/home/nprint/NPrint":
 
+```
+clone https://github.com/elexess/NPrint.git
+cd NPrint
+```
 
+Install the Python requirements through PIP:
 
-SETTING UP NPRINT
+```
+pip install -r requirements.txt
+```
 
+Copy .env_sample to .env and modify as needed:
 
+```
+cp .env_sample .env
+```
 
+## START NPRINT
 
-Install development tools:
-sudo apt-get install gcc g++ make -y
+To start NPrint in developer mode simply run the following in your NPrint folder:
 
-
-
-
-
-
-
-Install NODEJS:
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-
-
-
-sudo apt-get update -y && sudo apt-get install yarn -y
-
-
-
-
-Check that nodejs is installed:
-node -v
-
-
-
-
-Download (clone) Nprint application from GitHub:
-
-
-
-
-git clone https://github.com/elexess/nprint.git
-cd nprint
-
-
-
-
-npm install
-
-
-
-
-START NPRINT
-
-
-
-
-Go to the nprint folder and run:
-
-
-
-
-npm start
-
-
-
-
-
-
-
-DEBUGGING
-
-
-
-
-Make sure to set the printer in the batch print application.
-Computer\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\ESO\BatchPrintLabel
-Set PrinterName e.g. "WE1 Batchlabel Printer (ZLP2824 Plus) @ nprint-we1"
- 
+```
+flask run
+```
