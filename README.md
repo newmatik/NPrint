@@ -175,10 +175,17 @@ clone https://github.com/elexess/NPrint.git
 cd NPrint
 ```
 
-Install the Python requirements through PIP:
+Install pienv requirements through PIP:
 
 ```
-pip install -r requirements.txt
+pip install pipenv
+pipenv --python 3.9.2
+```
+
+Install the PIP requirements (Pipfile) through pipenv:
+```
+pipenv install
+pipenv shell
 ```
 
 Copy .env_sample to .env and modify as needed:
@@ -187,10 +194,19 @@ Copy .env_sample to .env and modify as needed:
 cp .env_sample .env
 ```
 
+We have to edit the ```$PATH``` variable to be able to run flask directly. 
+To do that, let's ```touch ~/.bash_aliases``` and then ```echo "export PATH=$PATH:~/.local/bin" >> ~/.bash_aliases```. Please exit SSH and reconnect for the new path to take effect.
+
 ## START NPRINT
+
+Make sure to enable the pipenv:
+
+```
+pipenv shell
+```
 
 To start NPrint in developer mode simply run the following in your NPrint folder:
 
 ```
-flask run
+flask run --debug --host=0.0.0.0
 ```
