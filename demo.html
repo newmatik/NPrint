@@ -19,8 +19,8 @@
                     <option value="/ping">GET: Ping ('/ping')</option>
                     <option value="/delete/labelfiles">POST: DeleteLabelFiles ('/delete/labelfiles')</option>
                     <option value="/printers">POST: Printers ('/printers')</option>
-                    <option value="/print/batchlabel">POST: PrintBatchLabel ('/print/batchlabel')</option>
-                    <option value="/print/boxlabel">POST: PrintBoxLabel ('/print/boxlabel')</option>
+                    <option value="/print/batch_label">POST: PrintBatchLabel ('/print/batch_label')</option>
+                    <option value="/print/box_label">POST: PrintBoxLabel ('/print/box_label')</option>
                 </select>
             </div>
             <div class="form-group">
@@ -67,11 +67,11 @@
                         requestBodyField.value = '{ "api_key": "g897hdfsgo987oh9gbinuhjvc" }';
                         document.getElementById('request-method').value = 'POST';
                     }
-                    if (endpointSelect.value === '/print/batchlabel') {
+                    if (endpointSelect.value === '/print/batch_label') {
                         requestBodyField.value = '{ "api_key": "g897hdfsgo987oh9gbinuhjvc", "printer": "WE1-Batchlabel", "batch": "32C242A", "item_code": "930304F", "description_line1": "description line 1", "description_line2": "description line 2", "warehouse": "KIT0123", "warehouse_parent": "A14", "tower": "TOWER", "msl": "MSL 3", "qty": "100", "date": "19.08.2023", "user": "Dominik Ottenbreit"}';
                         document.getElementById('request-method').value = 'POST';
                     }
-                    if (endpointSelect.value === '/print/boxlabel') {
+                    if (endpointSelect.value === '/print/box_label') {
                         requestBodyField.value = '{ "api_key": "g897hdfsgo987oh9gbinuhjvc", "printer": "WE1-Boxlabel", "kitting_box": "KIT186 - ESODE", "work_order": "WO-DE-23-00423-ST", "item_code": "IDO-0001E-01A-DE-ST", "priority": "Standard", "sales_order": "SO-DE-23-00526", "qty": 200, "description": "Idoru Pedal v5.0", "type": "Erstauftrag" }';
                         document.getElementById('request-method').value = 'POST';
                     }
