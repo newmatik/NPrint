@@ -6,25 +6,25 @@ REST API to print on ZPL enabled label printers.
 ## Hardware Requirements
 
 ### Raspberry Pi
- - Raspberry Pi 4 Model B (4GB RAM)
+ - Raspberry Pi 4 Model B (4 GB RAM)
  - Raspberry Pi 4 Enclosure
  - Raspberry Pi 15W Power Supply (EU)
- - 16 GB MicroSD-Card (Class10)
+ - 16 GB Micro-SD-Card (Class10)
 
 ### Label Printer with ZPL Protocol
- - ZD411d for 5cm labels (batch label)
- - Zebra GK420d or Labelident BP41 for 10cm labels (shipping labels)
+ - ZD411d for 5 cm labels (batch label)
+ - Zebra GK420d or Labelident BP41 for 10 cm labels (shipping labels)
 
-## OS SETUP OF RASPBERRY PI
+## OS Setup of Raspberry
 
 Download Raspberry Pi Imager and download a fresh image of Raspberry Pi OS onto the SD Card.
 We recommend using Raspberry Pi OS Lite (32-bit). Set the advanced settings like hostname
-and passwords before flashing the image so you can reduce configuration efforts. This can be
+and passwords before flashing the image, so you can reduce configuration efforts. This can be
 done in Raspberry Pi Imager with the gear symbol, before flashing.
 
 ### Default User 
-Username: nprint
-Password: smart4pi
+ - Username: "nprint"
+ - Password: "smart4pi"
 
 ## Basic System Configuration
 
@@ -49,7 +49,7 @@ sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -
 sudo raspi-config
 ```
 
-Go to Stystem Options -> Hostname
+Go to System Options → Hostname
 example: nprint-we1.de.newmatik.com
 
 After setting the hostname, reboot once.
@@ -75,7 +75,7 @@ After installing CUPS, add our user "nprint" to the user group “lpadmin”:
 sudo usermod -a -G lpadmin nprint
 ```
 
-Because we want to connect to the admin page through our computer we need to allowing the 
+Because we want to connect to the admin page through our computer we need to allow the 
 admin page remotely. We will also set that we share our printers in the network. This will
 require us to restart the CUPS service after the changes have been made to take effect.
 
@@ -93,7 +93,7 @@ the address: http://10.1.0.68:631/ (replace with actual IP address).
 
 CUPS can announce its presence on the network via mDNS (multicast DNS) and DNS-SD 
 (DNS Service Discovery) protocol, which is also known as Bonjour. In order to do that, 
-you need to install and run avahi-daemon, which is a service similiar to the Apple Bonjour 
+you need to install and run avahi-daemon, which is a service similar to the Apple Bonjour 
 service that allows computers to automatically discover shared devices and services on the local network.
 
 ```
@@ -115,7 +115,7 @@ sudo systemctl restart cups
 
 ## Printer Setup
 
-Connect the printers to your raspberry PI via USB connection. In our case we will connect
+Connect the printers to your Raspberry Pi via USB connection. In our case we will connect
 a Zebra ZLP 2824 Plus as a batch label printer and a Zebra GK420d as a box label printer.
 
 Open the CUPS admin page http://10.1.0.68:631/ (replace with actual IP address) and add a new printer.
@@ -127,12 +127,12 @@ TLP 2824 Plus)". Set a logical name, description and location.
 Name: WE1-Batchlabel
 Description: WE1 Batch Label Printer (ZLP2824 Plus)
 Location: WE1
-Select Netrowk Print share
+Select Network Print share
 
 In step 5 select the Model (e.g. "Zebra ZPL Label Printer (en)") and press Add Printer.
 
 Under "General" configure the label size. In our case we select "custom" label size with
-53x55 mm size with 203 dpi. Web Sensing and Direct Thermotransfermedia as standard settings.
+53x55 mm size with 203 dpi. Web Sensing and "Direct Thermo Transfer Media" as standard settings.
 Go to "Printer Settings" before saving and adjust darkness to 30 and print mode to "tear off".
 Set the print rate to the highest print speed.
 
@@ -143,12 +143,12 @@ Now save these defaults and go to the printer page to print a test page.
 Name: WE1-Boxlabel
 Description: WE1 Box Label Printer (GK420d)
 Location: WE1
-Select Netrowk Print share
+Select Network Print share
 
 In step 5 select the Model (e.g. "Zebra ZPL Label Printer (en)") and press Add Printer.
 
 Under "General" configure the label size. In our case we select "custom" label size with
-101x152 mm size with 203 dpi. Web Sensing and Direct Thermotransfermedia as standard settings.
+101x152 mm size with 203 dpi. Web Sensing and "Direct Thermo Transfer Media" as standard settings.
 Go to "Printer Settings" before saving and adjust darkness to 30 and print mode to "tear off".
 Set the print rate to the highest print speed.
 
@@ -158,9 +158,11 @@ Now save these defaults and go to the printer page to print a test page.
 
 To change the orientation by 180 degrees run the following in the terminal with the correct printer name
 
+```
 lpadmin -p WE1-Batchlabel -o orientation-requested-default=6
+```
 
-## SETTING UP NPRINT
+## Setting up NPrint
 
 ### About Flask REST API Development
 
@@ -175,7 +177,7 @@ clone https://github.com/elexess/NPrint.git
 cd NPrint
 ```
 
-Install pienv requirements through PIP:
+Install pipenv requirements through PIP:
 
 ```
 pip install pipenv
@@ -195,9 +197,9 @@ cp .env_sample .env
 ```
 
 We have to edit the ```$PATH``` variable to be able to run flask directly. 
-To do that, let's ```touch ~/.bash_aliases``` and then ```echo "export PATH=$PATH:~/.local/bin" >> ~/.bash_aliases```. Please exit SSH and reconnect for the new path to take effect.
+To do that, create the file with ```touch ~/.bash_aliases``` and then ```echo "export PATH=$PATH:~/.local/bin" >> ~/.bash_aliases```. Please exit SSH and reconnect for the new path to take effect.
 
-## START NPRINT
+## Start NPrint
 
 Make sure to enable the pipenv:
 
@@ -211,6 +213,6 @@ To start NPrint in developer mode simply run the following in your NPrint folder
 flask run
 ```
 
-Check if the flask app is runnign by opening the URL in your browser:
+Check if the flask app is running by opening the URL in your browser:
 
 http://10.1.0.68:3000/api/ping (replace with actual IP)

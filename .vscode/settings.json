@@ -1,0 +1,38 @@
+{
+    "cSpell.language": "en,de-DE",
+    "cSpell.enabled": true,
+    "cSpell.dictionaries": [
+        "softwareTerms",
+        "bash",
+        "css",
+        "fonts",
+        "html",
+        "node",
+        "python"
+    ],
+    "cSpell.words": [
+        "autoclean",
+        "autoremove",
+        "avahi",
+        "Batchlabel",
+        "Boxlabel",
+        "cupsctl",
+        "Dominik",
+        "dotenv",
+        "Erstauftrag",
+        "ESODE",
+        "Idoru",
+        "Imager",
+        "labelfiles",
+        "Labelident",
+        "libcups",
+        "lpadmin",
+        "newmatik",
+        "nprint",
+        "Ottenbreit",
+        "pyfile",
+        "raspi",
+        "reqparse",
+        "usermod"
+    ],
+}
