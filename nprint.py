@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-from api_endpoints import (
+from controller.api_endpoints import (
     UpdateApiKey,
     IndexPage,
     Ping,

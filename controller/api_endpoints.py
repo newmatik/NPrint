@@ -4,7 +4,7 @@ import cups
 import uuid
 import json
 from flask_restful import Resource, reqparse
-from model.security import api_key_required
+from controller.security import api_key_required
 
 def check_printer(printer_name):
     if printer_name not in cups.Connection().getPrinters():
