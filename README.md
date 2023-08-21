@@ -196,6 +196,9 @@ Copy .env_sample to .env and modify as needed:
 cp .env_sample .env
 ```
 
+Modify the API-KEY in .env or keep the default API-KEY "g897hdfsgo987oh9gbinuhjvc".
+Make sure to change the API-KEY on a production system.
+
 We have to edit the ```$PATH``` variable to be able to run flask directly. 
 To do that, create the file with ```touch ~/.bash_aliases``` and then ```echo "export PATH=$PATH:~/.local/bin" >> ~/.bash_aliases```. Please exit SSH and reconnect for the new path to take effect.
 
@@ -216,3 +219,30 @@ flask run
 Check if the flask app is running by opening the URL in your browser:
 
 http://10.1.0.68:3000/api/ping (replace with actual IP)
+
+# Testing the application
+
+Open demo.html to test basic functionality, use Postman or the following CURL examples.
+
+Ping:
+```
+curl http://localhost:3000/api/ping
+```
+
+Get Printers installed in CUPS:
+```
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"api_key": "g897hdfsgo987oh9gbinuhjvc"}' \
+  http://localhost:3000/api/printers
+```
+
+Update the API-KEY:
+```
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"api_key": "OLD API KEY", "new_api_key": "NEW API KEY"}' \
+  http://localhost:3000/api/update/api_key
+```
+
+For a full list of API Endpoints check nprint.py
