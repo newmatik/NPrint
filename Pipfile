@@ -9,7 +9,7 @@ flask-restful = ">=0.3.10"
 pycups = ">=2.0.1"
 ruff = ">=0.0.285"
 python-dotenv = ">=1.0.0"
-gunicorn = ">=21.2.0"
+gunicorn = "*"
 flask-cors = "*"
 
 [dev-packages]
