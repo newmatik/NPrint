@@ -32,15 +32,16 @@ Connect to the device through SSH (replace with actual IP address).
 Log in with user "nprint" and password "smart4pi".
 
 ```
-ssh nprint@10.1.0.68 $
+ssh nprint@10.1.1.128 $
 ```
 
 ### System Update
 
 Update Raspberry Pi OS and all packages with apt-get package manager by running this command:
-
 ```
-sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoclean -y && sudo apt-get clean -y && sudo apt autoremove -y && sudo apt autoremove -y
+sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y &&
+sudo apt-get autoclean -y && sudo apt-get clean -y && sudo apt autoremove -y &&
+sudo apt autoremove -y
 ```
 
 ### Setting Hostname
@@ -87,7 +88,32 @@ sudo systemctl restart cups
 After installing CUPS and adding a user, or set of users, to the user group lpadmin, 
 the rest of the configuration can be done via the CUPS Administration page. 
 You can access this page on the Raspberry Pi by opening a web browser and going to 
-the address: http://10.1.0.68:631/ (replace with actual IP address).
+the address: http://10.1.1.128:631/ (replace with actual IP address).
+
+### Securing with UFW Firewall
+
+```
+sudo apt-get install -y ufw
+
+# SSH and DNS
+sudo ufw allow ssh
+sudo ufw allow dns
+
+# Flask Development Port
+sudo ufw allow 3000
+
+# CUPS IPP Printer Sharing
+sudo ufw allow 631/tcp
+sudo ufw allow 5353/udp
+
+# CUPS IPP Printer Sharing
+sudo ufw allow 137/udp
+sudo ufw allow 139/tcp
+sudo ufw allow 445/tcp
+
+# Enable UFW
+sudo ufw enable
+```
 
 ### Share CUPS Printer via Bonjour/IPP Protocol
 
@@ -118,7 +144,7 @@ sudo systemctl restart cups
 Connect the printers to your Raspberry Pi via USB connection. In our case we will connect
 a Zebra ZLP 2824 Plus as a batch label printer and a Zebra GK420d as a box label printer.
 
-Open the CUPS admin page http://10.1.0.68:631/ (replace with actual IP address) and add a new printer.
+Open the CUPS admin page http://10.1.1.128:631/ (replace with actual IP address) and add a new printer.
 Select the local barcode printer e.g. "Zebra Technologies ZTC TLP 2824 Plus (Zebra Technologies ZTC 
 TLP 2824 Plus)". Set a logical name, description and location.
 
@@ -218,7 +244,7 @@ flask run
 
 Check if the flask app is running by opening the URL in your browser:
 
-http://10.1.0.68:3000/api/ping (replace with actual IP)
+http://10.1.1.128:3000/api/ping (replace with actual IP)
 
 # Testing the application
 
