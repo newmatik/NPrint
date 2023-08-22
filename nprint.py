@@ -6,6 +6,7 @@ from flask_cors import CORS
 from controller.api_endpoints import (
     UpdateApiKey,
     IndexPage,
+    OperatingSystem,
     Ping,
     DeleteLabelFiles,
     Printers,
@@ -19,6 +20,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 api = Api(app, prefix='/api')
 api.add_resource(UpdateApiKey, '/update/api_key')
 api.add_resource(IndexPage, '/')
+api.add_resource(OperatingSystem, '/os')
 api.add_resource(Ping, '/ping')
 api.add_resource(DeleteLabelFiles, '/delete/labelfiles')
 api.add_resource(Printers, '/printers')

@@ -203,6 +203,15 @@ clone https://github.com/elexess/NPrint.git
 cd NPrint
 ```
 
+#### On MacOS
+
+```
+brew install pipenv
+
+```
+
+#### On Raspberry Pi
+
 Install pipenv requirements through PIP:
 
 ```
@@ -213,7 +222,6 @@ pipenv --python 3.9.2
 Install the PIP requirements (Pipfile) through pipenv:
 ```
 pipenv install
-pipenv shell
 ```
 
 Copy .env_sample to .env and modify as needed:

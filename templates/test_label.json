@@ -1,0 +1,15 @@
+{
+	"name": "Test Label",
+    "parser_args": [
+        {
+			"arg": "api_key",
+            "required": true,
+			"help": "api_key is required"
+		},
+        {
+            "arg": "printer",
+            "required": true,
+            "help": "Printer to print to"
+        }
+    ]
+}
