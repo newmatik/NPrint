@@ -6,10 +6,11 @@ REST API to print on ZPL enabled label printers.
 ## Hardware Requirements
 
 ### Raspberry Pi
- - Raspberry Pi 4 Model B (4 GB RAM)
- - Raspberry Pi 4 Enclosure
- - Raspberry Pi 15W Power Supply (EU)
- - 16 GB Micro-SD-Card (Class10)
+ - Raspberry Pi 4 Model B 4 GB RAM (Conrad: 2138865)
+ - Kühllörper Raspberry Pi (Conrad: 2247647)
+ - Raspberry Pi 4 Enclosure (Conrad: 2140254)
+ - Raspberry Pi 15W Power Supply EU (Conrad: 2140238 - VQ)
+ - 16 GB Micro-SD-Card Class10 (Conrad: 1421772 - VQ)
 
 ### Label Printer with ZPL Protocol
  - ZD411d for 5 cm labels (batch label)
