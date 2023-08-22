@@ -1,0 +1,15 @@
+{
+	"recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "wayou.vscode-todo-highlight",
+        "streetsidesoftware.code-spell-checker",
+        "github.copilot",
+        "github.copilot-chat",
+        "oderwat.indent-rainbow",
+        "roelkneepkens-shipitsmarter.labelary",
+        "iancooper.code-zpl",
+        "postman.postman-for-vscode"
+    ]
+}
