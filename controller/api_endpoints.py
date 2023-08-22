@@ -3,6 +3,7 @@ import glob
 import cups
 import uuid
 import json
+import platform
 from flask_restful import Resource, reqparse
 from controller.security import api_key_required
 
@@ -29,7 +30,7 @@ class UpdateApiKey(Resource):
             with open('.env', 'w') as f:
                 for line in lines:
                     if line.startswith('API_KEY=') or line.startswith('API_KEY ='):
-                        f.write(f'API_KEY={new_api_key}\n')
+                        f.write(f'API_KEY="{new_api_key}"\n')
                     else:
                         f.write(line)
             os.environ['API_KEY'] = new_api_key
@@ -50,9 +51,19 @@ class Ping(Resource):
 class Printers(Resource):
     @api_key_required
     def post(self):
-        conn = cups.Connection ()
-        printers = conn.getPrinters ()
-        return {'printers': printers}
+        try:
+            conn = cups.Connection()
+            printers = conn.getPrinters()
+            return {'printers': printers}
+        except cups.IPPError as e:
+            return {'error': str(e)}
+        
+
+class OperatingSystem(Resource):
+    def get(self):
+        os_name = platform.system()
+        os_version = platform.release()
+        return {'os': os_name, 'version': os_version}
 
 class DeleteLabelFiles(Resource):
     @api_key_required
@@ -100,6 +111,7 @@ class PrintLabel(Resource):
         if result is not None:
             return result
 
+        # Example: 'lp -d Zebra_LP2844 -o raw labelfiles/12345678-1234-1234-1234-123456789012.zpl'
         os.system('lp -d ' + args['printer'] + ' -o raw ' + label_file)
 
         return {'message': 'Label printed',
